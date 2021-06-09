@@ -33,8 +33,8 @@ class StoresDetailsScreen extends StatefulWidget {
       coordiante,
       townshipId;
 
-  StoresDetailsScreen(this.surDetail, this.passData, this.updateStatuspass,
-      this.regOrAss, this.coordiante, this.checkStatus, this.townshipId);
+  StoresDetailsScreen(this.passData, this.updateStatuspass, this.regOrAss,
+      this.coordiante, this.checkStatus, this.townshipId);
 
   @override
   _StoresDetailsScreenState createState() => _StoresDetailsScreenState();
@@ -93,7 +93,10 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
     super.initState();
     localJsonData();
     this.loginData = this.storage.getItem("loginData");
-    this.storage.setItem("surDetail", this.widget.surDetail);
+    // print("surDetail1->");
+    // print(this.widget.surDetail);`
+
+    // this.storage.setItem("surDetail", this.widget.surDetail);
     print("as-->" + this.widget.passData.toString());
     setState(
       () {
@@ -258,12 +261,18 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
           }
           print("shopSyskey1--> $shopSyskey" + "___" + _storeType.toString());
         }
+
         getLocation().then((k) => {
-              print({"$k"}),
+              print({"kk-->" + "$k"}),
               Future.delayed(const Duration(milliseconds: 600), () {
                 print("latLong-->" + this.widget.regOrAss.toString());
-                if (this.widget.regOrAss == "Map") {
-                  var _latLong = this.storage.getItem("Maplatlong");
+                var _latLong = this.storage.getItem("Maplatlong");
+
+                if ((this.widget.regOrAss == "Map" ||
+                        this.widget.regOrAss == "assign" ||
+                        this.widget.regOrAss == "register" ||
+                        this.widget.regOrAss == "assignStore") &&
+                    _latLong != null) {
                   print("--->" + _latLong.toString());
                   latitude = _latLong["lat"];
                   longitude = _latLong["long"];
@@ -306,7 +315,7 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
                                 for (var b = 0; b < list1.length; b++)
                                   {
                                     list2 = list1[b]["geometry"]["coordinates"],
-//                        print("43-->" + list2.toString()),
+                                    //  print("43-->" + list2.toString()),
                                     for (var c = 0; c < list2.length; c++)
                                       {
                                         for (var d = 0;
@@ -348,15 +357,13 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
                       },
                     );
               }),
-
             });
         print("townID==>" + this.widget.townshipId.toString());
 
-        if (this.widget.regOrAss == "newStore")
-        {
-        // setState(() {
-        _getSateDistrictandTownShip();
-        // });
+        if (this.widget.regOrAss == "newStore") {
+          // setState(() {
+          _getSateDistrictandTownShip();
+          // });
         }
       },
     );
@@ -996,7 +1003,7 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
                   //   child: SelectableText(lables.toString()),
                   // ),
                   Container(
-                    margin: EdgeInsets.only(top: 10.0),
+                    margin: EdgeInsets.only(top: 10.0, left: 3.0),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).pushReplacement(
@@ -2201,6 +2208,8 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
                         } else {
                           this.storage.setItem("completeStatus", "inComplete");
                         }
+
+
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                               builder: (context) => CheckNeighborhoodScreen(
@@ -2208,19 +2217,7 @@ class _StoresDetailsScreenState extends State<StoresDetailsScreen> {
                                   this.shopPhoneNo.text,
                                   this.allAddress,
                                   this.widget.regOrAss,
-                                  this.widget.passData)
-                              //  OutsideInsideNeighborhood(
-                              //   this.shopName.text,
-                              //   this.shopNamemm.text,
-                              //   this.shopPhoneNo.text,
-                              //   this.ownerName.text,
-                              //   this.ownerPhoneNo.text,
-                              //   this.street.text,
-                              //   this.plusCode,
-                              //   this.widget.regOrAss,
-                              //   this.widget.passData,
-                              // ),
-                              ),
+                                  this.widget.passData)),
                         );
                       }
                     },

@@ -7,7 +7,9 @@ class OnlineSerives {
   final LocalStorage storage = new LocalStorage('Surveyor');
   String url;
   String overKey;
-  String netWorkerr = "Can't connect right now. [005]";
+  String netWorkerr = "Connection error!";
+
+  String serverfail = "Server fail!";
   String urlErr = "Please check URL";
   String serverErr;
   String loginUserId;
@@ -48,7 +50,7 @@ class OnlineSerives {
   }
 
   Servererror(code) {
-    this.serverErr = "Server error. [" + code.toString() + "]";
+    this.serverErr = "Connection error!";
     return this.serverErr;
   }
 
@@ -81,6 +83,9 @@ class OnlineSerives {
           ShowToast("Invalid User ID or Password");
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -115,6 +120,9 @@ class OnlineSerives {
           ShowToast("Saving fail.");
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -155,6 +163,9 @@ class OnlineSerives {
           }
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -171,6 +182,7 @@ class OnlineSerives {
     this.url = this.url + "shop/saveshop";
     var body = json.encode(params);
     var data;
+    print("csparam->" + body);
     var response = await http
         .post(this.url, headers: this.headersWithKey, body: body)
         .timeout(const Duration(milliseconds: 40000))
@@ -178,7 +190,8 @@ class OnlineSerives {
 
     if (response != null) {
       data = json.decode(response.body);
-      print({"$data"});
+      print("csresponse->");
+      print({'$data["status"]'});
       if (response.statusCode == 200) {
         if (data["status"] == "SUCCESS") {
           this.status = true;
@@ -187,10 +200,13 @@ class OnlineSerives {
           ShowToast("Code Already Existed");
           this.status = false;
         } else {
-          print("Hey" + data["status"]);
-          ShowToast("Server fail.");
+          print("status->" + data["status"]);
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -219,9 +235,12 @@ class OnlineSerives {
         if (data["status"] == "SUCCESS") {
           this.status = true;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -247,6 +266,7 @@ class OnlineSerives {
         .post(this.url, headers: this.headersWithKey, body: body)
         .timeout(const Duration(milliseconds: 40000))
         .catchError((err) => {ShowToast(this.netWorkerr), this.status = false});
+
     print("123456-->");
     print("${response.body}");
 
@@ -309,9 +329,12 @@ class OnlineSerives {
           print("checkorupdate->" + checkSaveorupdate);
           // print("RES $_array");
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -367,9 +390,12 @@ class OnlineSerives {
 
           this.status = true;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -399,9 +425,12 @@ class OnlineSerives {
           this.status = true;
 //          this.storage.setItem("State", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -431,9 +460,12 @@ class OnlineSerives {
           this.status = true;
 //          this.storage.setItem("State", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -463,9 +495,12 @@ class OnlineSerives {
           print("district=>" + data["list"].toString());
 //          this.storage.setItem("District", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -496,9 +531,12 @@ class OnlineSerives {
           this.status = true;
 //          this.storage.setItem("State", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -530,9 +568,12 @@ class OnlineSerives {
           this.storage.setItem(
               "regStore", data["list"]); //For showing Registration Store in Map
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -563,9 +604,12 @@ class OnlineSerives {
         } else if (data["status"] == "nodata") {
           this.status = false;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -596,9 +640,12 @@ class OnlineSerives {
         } else if (data["status"] == "nodata") {
           this.status = true;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -616,10 +663,16 @@ class OnlineSerives {
     this.url = this.url + "surveyor/allSurveyorHeaderList";
     var body = json.encode(params);
     var data;
+    //  err=>  {"shopSyskey":"null","svrHdrSK":[],"CategorySK":[]}
+    //  {"shopSyskey":"2006250527458500985","svrHdrSK":["1","2012120449109600003"],"CategorySK":[]}
+
+    print("headersWithKey->" + this.headersWithKey.toString());
+    print(body);
     var response = await http
         .post(this.url, headers: this.headersWithKey, body: body)
         .timeout(const Duration(milliseconds: 40000))
         .catchError((err) => {ShowToast(this.netWorkerr), this.status = false});
+
     if (response != null) {
       data = json.decode(response.body);
       if (response.statusCode == 200) {
@@ -633,9 +686,12 @@ class OnlineSerives {
           ShowToast("No data.");
           this.status = false;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -667,9 +723,12 @@ class OnlineSerives {
           this.status = true;
           this.storage.setItem("Routebyuser", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -699,9 +758,12 @@ class OnlineSerives {
         if (data["status"] == "SUCCESS") {
           this.status = true;
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -735,9 +797,12 @@ class OnlineSerives {
           this.status = true;
           this.storage.setItem("Category", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -762,6 +827,7 @@ class OnlineSerives {
         .post(this.url, headers: this.headersWithKey, body: body)
         .timeout(const Duration(milliseconds: 40000))
         .catchError((err) => {ShowToast(this.netWorkerr), this.status = false});
+
     if (response != null) {
       data = json.decode(response.body);
       if (response.statusCode == 200) {
@@ -769,9 +835,12 @@ class OnlineSerives {
           this.status = true;
           this.storage.setItem("Region", data["list"]);
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -794,6 +863,7 @@ class OnlineSerives {
         .post(this.url, headers: this.headersWithKey, body: body)
         .timeout(const Duration(milliseconds: 40000))
         .catchError((err) => {ShowToast(this.netWorkerr), this.status = false});
+
     if (response != null) {
       data = json.decode(response.body);
       print({"Helooo+$data"});
@@ -806,9 +876,12 @@ class OnlineSerives {
             print("123-->");
           }
         } else {
-          ShowToast("Server fail.");
+          ShowToast(this.serverfail);
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;
@@ -843,6 +916,9 @@ class OnlineSerives {
           ShowToast("Server fail for getStoreType.");
           this.status = false;
         }
+      } else if (response.statusCode.toString().startsWith("5") ||
+          response.statusCode.toString().startsWith("4")) {
+        ShowToast(this.serverfail);
       } else {
         ShowToast(this.Servererror(response.statusCode));
         this.status = false;

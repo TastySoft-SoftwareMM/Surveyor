@@ -70,7 +70,6 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
         isOther = true;
         // section = header["sections"];
       }
-
     }
     return Container(
       margin: EdgeInsets.only(left: 5, right: 5),
@@ -78,7 +77,7 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
         child: ListTile(
           onTap: () {
             print("aa-->" + section.toString());
-            if(isOther == true){
+            if (isOther == true) {
               // Navigator.of(context).pushReplacement(
               //   MaterialPageRoute(
               //     builder: (context) => NeighborhoodSurveyScreen(
@@ -99,22 +98,24 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
               //         this.headerShopSyskey),
               //   ),
               // );
-            }else{
+            } else {
+              print("session");
+              print(section);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                     builder: (context) => OutsideInsideNeighborhood(
-                      isNeighborhood,
-                      isOutside,
-                      isInside,
-                      isStoreOperater,
-                      this.widget.shopName,
-                      this.widget.shopPhone,
-                      this.widget.address,
-                      this.widget.regOrAss,
-                      this.widget.passData,
-                      section,
-                      header,
-                    )),
+                          isNeighborhood,
+                          isOutside,
+                          isInside,
+                          isStoreOperater,
+                          this.widget.shopName,
+                          this.widget.shopPhone,
+                          this.widget.address,
+                          this.widget.regOrAss,
+                          this.widget.passData,
+                          section,
+                          header,
+                        )),
               );
             }
           },
@@ -236,7 +237,11 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
         this.widget.regOrAss == "register") {
       shopSyskey = this.widget.passData[0]["id"].toString();
     } else {
-      shopSyskey = this.widget.passData[0]["shopsyskey"].toString();
+      if (this.widget.passData[0]["shopsyskey"] == null) {
+        shopSyskey = this.widget.passData[0]["id"].toString();
+      } else {
+        shopSyskey = this.widget.passData[0]["shopsyskey"].toString();
+      }
     }
     var params = {
       "shopSyskey": shopSyskey,
@@ -260,6 +265,7 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                       }),
                   for (var i = 0; i < headerList.length; i++)
                     {
+                      print("status2->" + headerList[i]["status"].toString()),
                       // print("ssee->" + headerList[i]["status"].toString())
                       if (headerList[i]["status"].toString() == "1.0")
                         {
@@ -267,12 +273,16 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                           print("ssee->" + count.toString()),
                         }
                     },
-                  if(count == headerList.length){
-                    setState(() => {
-                      this.complete = true,
-                    }),
-                  },
-                  print("res -->" + this.headerList.length.toString() + "___" + count.toString()),
+                  if (count == headerList.length)
+                    {
+                      setState(() => {
+                            this.complete = true,
+                          }),
+                    },
+                  print("res -->" +
+                      this.headerList.length.toString() +
+                      "___" +
+                      count.toString()),
                 }
               else
                 {
@@ -390,6 +400,7 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                     onTap: () {
                       if (completeStatus != "Complete") {
                         if (complete != true) {
+                          showLoading();
                           var passValue = this.widget.passData[0];
                           print("passVal-->" +
                               passValue.toString() +
@@ -413,11 +424,28 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                               "task": "INCOMPLETE",
                             };
                           } else {
+                            var _latLong = this.storage.getItem('Maplatlong');
+                            var lat, long, shopSyskey;
+                            if (passValue["lat"] == null ||
+                                passValue["long"] == null) {
+                              lat = _latLong["lat"].toString();
+                              long = _latLong["long"].toString();
+                            } else {
+                              lat = passValue["lat"].toString();
+                              long = passValue["long"].toString();
+                            }
+
+                            if (passValue["id"] == null) {
+                              shopSyskey = passValue["shopsyskey"].toString();
+                            } else {
+                              shopSyskey = passValue["id"].toString();
+                            }
+
                             param = {
-                              "lat": passValue["lat"].toString(),
-                              "lon": passValue["long"].toString(),
+                              "lat": lat,
+                              "lon": long,
                               "address": passValue["address"].toString(),
-                              "shopsyskey": passValue["shopsyskey"].toString(),
+                              "shopsyskey": shopSyskey,
                               "usersyskey": loginUser['syskey'],
                               "checkInType": "TEMPCHECKOUT",
                               "register": true,
@@ -425,6 +453,7 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                               "task": "INCOMPLETE",
                             };
                           }
+
                           print("params-->" + param.toString());
                           this
                               .onlineSerives
@@ -432,13 +461,19 @@ class _CheckNeighborhoodScreenState extends State<CheckNeighborhoodScreen> {
                               .then((value) => {
                                     if (value["status"] == true)
                                       {
+                                        hideLoadingDialog(),
                                         Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   StoreScreen()),
                                         ),
                                       }
-                                  });
+                                    else
+                                      {
+                                        hideLoadingDialog(),
+                                      }
+                                  })
+                              .catchError((err) => hideLoadingDialog());
                         }
                       }
                     },

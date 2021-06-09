@@ -17,7 +17,7 @@ Future getLocation() async {
   if (!_serviceEnabled) {
     _serviceEnabled = await location.requestService();
     if (!_serviceEnabled) {
-      return ;
+      return;
     }
   }
 
@@ -29,11 +29,11 @@ Future getLocation() async {
     }
   }
 
-   return _locationData = await location.getLocation();
+  return _locationData = await location.getLocation();
   print("location -->" + _locationData.latitude.toString());
 }
 
-Future<bool> getGPSstatus() async{
+Future<bool> getGPSstatus() async {
   var status = await Geolocator().isLocationServiceEnabled();
   print("${status}");
   return status;

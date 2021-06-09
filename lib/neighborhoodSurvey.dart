@@ -150,42 +150,11 @@ class _NeighborhoodSurveyScreenState extends State<NeighborhoodSurveyScreen> {
       });
       var _question = this.widget.question;
       var pssOject = this.widget.passData[0];
-      if (this.widget.regOrAss == "assign") {
-        _allData["id"] = pssOject["shopsyskey"];
-        _allData["saveCondition"] = saveCondition;
-        _allData["active"] = true;
-        _allData["name"] = pssOject["shopname"];
-        _allData["mmName"] = pssOject["shopnamemm"];
-        _allData["personName"] = pssOject["personname"];
-        _allData["personPhoneNumber"] = pssOject["personph"];
-        _allData["phoneNumber"] = pssOject["phoneno"];
-        _allData["stateId"] = pssOject["stateid"];
-        _allData["districtId"] = pssOject["districtid"];
-        _allData["townshipId"] = pssOject["townshipid"];
-        _allData["townId"] = pssOject["townid"];
-        _allData["wardId"] = pssOject["wardid"];
-        _allData["address"] = pssOject["address"];
-        _allData["street"] = pssOject["street"];
-        _allData["t12"] = "";
-        _allData["t14"] = "";
-        var _syskey = "";
-        _syskey = svrhdrSyskey;
 
-        _allData["svrHdrData"] = {
-          "userSyskey":userSyseky.toString(),
-          "syskey": _syskey,
-          "n1": sectionCompletestatus,
-          "n2": pssOject["shopsyskey"].toString(),
-          "n3": this.widget.header["headerSyskey"].toString()
-        };
-
-        _allData["locationData"] = {
-          "latitude": pssOject["lat"],
-          "longitude": pssOject["long"],
-          "plusCode": pssOject["pluscode"],
-          "minuCode": pssOject["mimu"]
-        };
-      } else {
+      print("pssObject");
+      print(pssOject);
+      // if (this.widget.regOrAss == "assign") {
+      if (pssOject["shopsyskey"] == null) {
         _allData["id"] = pssOject["id"];
         _allData["saveCondition"] = saveCondition;
         _allData["active"] = true;
@@ -207,7 +176,7 @@ class _NeighborhoodSurveyScreenState extends State<NeighborhoodSurveyScreen> {
         _syskey = svrhdrSyskey;
         print("syskey1=>" + _syskey);
         _allData["svrHdrData"] = {
-          "userSyskey":userSyseky.toString(),
+          "userSyskey": userSyseky.toString(),
           "syskey": _syskey,
           "n1": sectionCompletestatus,
           "n2": pssOject["id"].toString(),
@@ -220,13 +189,51 @@ class _NeighborhoodSurveyScreenState extends State<NeighborhoodSurveyScreen> {
           "plusCode": pssOject["locationData"]["plusCode"],
           "minuCode": pssOject["locationData"]["minuCode"]
         };
+      } else {
+        _allData["id"] = pssOject["shopsyskey"];
+        _allData["saveCondition"] = saveCondition;
+        _allData["active"] = true;
+        _allData["name"] = pssOject["shopname"];
+        _allData["mmName"] = pssOject["shopnamemm"];
+        _allData["personName"] = pssOject["personname"];
+        _allData["personPhoneNumber"] = pssOject["personph"];
+        _allData["phoneNumber"] = pssOject["phoneno"];
+        _allData["stateId"] = pssOject["stateid"];
+        _allData["districtId"] = pssOject["districtid"];
+        _allData["townshipId"] = pssOject["townshipid"];
+        _allData["townId"] = pssOject["townid"];
+        _allData["wardId"] = pssOject["wardid"];
+        _allData["address"] = pssOject["address"];
+        _allData["street"] = pssOject["street"];
+        _allData["t12"] = "";
+        _allData["t14"] = "";
+        var _syskey = "";
+        _syskey = svrhdrSyskey;
+
+        _allData["svrHdrData"] = {
+          "userSyskey": userSyseky.toString(),
+          "syskey": _syskey,
+          "n1": sectionCompletestatus,
+          "n2": pssOject["shopsyskey"].toString(),
+          "n3": this.widget.header["headerSyskey"].toString()
+        };
+
+        _allData["locationData"] = {
+          "latitude": pssOject["lat"],
+          "longitude": pssOject["long"],
+          "plusCode": pssOject["pluscode"],
+          "minuCode": pssOject["mimu"]
+        };
       }
+      // } else {}
+
       var questionAndAnswer = [];
 
       for (var i = 0; i < this.questions.length; i++) {
         var loopData = this.questions[i];
         var loopPrimary = {};
         loopPrimary = this._primaryData[i];
+
         if (loopData["TypeDesc"] == "Fill in the Blank") {
           var _value = {};
           _value["id"] = loopData["QuestionShopSyskey"];
@@ -1192,10 +1199,10 @@ class _NeighborhoodSurveyScreenState extends State<NeighborhoodSurveyScreen> {
     userSyseky = tempData["syskey"].toString();
     print("098-->" + userSyseky.toString());
     var _pssOject;
-    if (this.widget.regOrAss == "assign") {
-      _pssOject = this.widget.passData[0]["shopsyskey"];
-    } else {
+    if (this.widget.passData[0]["shopsyskey"] == null) {
       _pssOject = this.widget.passData[0]["id"];
+    } else {
+      _pssOject = this.widget.passData[0]["shopsyskey"];
     }
 
     this.url = this.storage.getItem('URL');
@@ -1830,30 +1837,28 @@ class _NeighborhoodSurveyScreenState extends State<NeighborhoodSurveyScreen> {
               // }),
             })
         .catchError((err) => {});
-      print("await data ----------");
-      if (this.widget.headershopKey == "") {
-        saveCondition = "1";
-      } else {
-        for (var i = 0; i < questions.length; i++) {
-          if (questions[i]["AnswerShopPhoto"].length > 0) {
-            saveCondition = "";
-            break;
-          }
-          if (questions[i]["AnswerDesc"] != "") {
-            saveCondition = "";
-            break;
-          }
-          if (questions[i]["AnswerSyskey"] != "") {
-            saveCondition = "";
-            break;
-          }
+    print("await data ----------");
+    if (this.widget.headershopKey == "") {
+      saveCondition = "1";
+    } else {
+      for (var i = 0; i < questions.length; i++) {
+        if (questions[i]["AnswerShopPhoto"].length > 0) {
+          saveCondition = "";
+          break;
         }
-        print("121--");
+        if (questions[i]["AnswerDesc"] != "") {
+          saveCondition = "";
+          break;
+        }
+        if (questions[i]["AnswerSyskey"] != "") {
+          saveCondition = "";
+          break;
+        }
       }
+      print("121--");
+    }
     hideLoadingDialog();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   getImage(index, _data, onlinePhoto) async {

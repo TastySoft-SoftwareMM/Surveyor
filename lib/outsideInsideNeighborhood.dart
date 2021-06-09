@@ -176,10 +176,10 @@ class _OutsideInsideNeighborhoodState extends State<OutsideInsideNeighborhood> {
     // print("098-->" + svrhdrSyskey);
     completeStatus = this.storage.getItem("completeStatus");
     var _pssOject;
-    if (this.widget.regOrAss == "assign") {
-      _pssOject = this.widget.passData[0]["shopsyskey"];
-    } else {
+    if (this.widget.passData[0]["shopsyskey"] == null) {
       _pssOject = this.widget.passData[0]["id"];
+    } else {
+      _pssOject = this.widget.passData[0]["shopsyskey"];
     }
 
     var param = {
@@ -195,7 +195,11 @@ class _OutsideInsideNeighborhoodState extends State<OutsideInsideNeighborhood> {
     var totalCount;
     var answeredCount;
     var sections = this.widget.header["sections"];
-    this.onlineSerives.getQuestions(param,"allsection").then((value) => {
+
+    print("allsection->");
+    print(param);
+
+    this.onlineSerives.getQuestions(param, "allsection").then((value) => {
           data = value["data"],
           print("--data>>" + sections.toString()),
           for (var i = 0; i < sections.length; i++)
@@ -546,7 +550,7 @@ class _OutsideInsideNeighborhoodState extends State<OutsideInsideNeighborhood> {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    if(completeStatus != "Complete"){
+                    if (completeStatus != "Complete") {
                       if (continueStatus == true) {
                         this.clickComplete();
                       }
@@ -557,22 +561,23 @@ class _OutsideInsideNeighborhoodState extends State<OutsideInsideNeighborhood> {
                     width: 300,
                     margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: Center(
-                      child: completeStatus == "Complete" || continueStatus != true
-                          ? Text(
-                              "Complete",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white38,
-                                  fontSize: 15),
-                            )
-                          : Text(
-                              "Complete",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
+                      child:
+                          completeStatus == "Complete" || continueStatus != true
+                              ? Text(
+                                  "Complete",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white38,
+                                      fontSize: 15),
+                                )
+                              : Text(
+                                  "Complete",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
                     ),
                   ),
                 ),

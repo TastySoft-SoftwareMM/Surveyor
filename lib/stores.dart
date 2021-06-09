@@ -449,13 +449,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                       {
                                                         this.storage.setItem(
                                                             "Category", []),
+                                                        this.setSurDetail(
+                                                          data["newSurdetail"],
+                                                        ),
                                                         Navigator.of(context)
                                                             .pushReplacement(
                                                           MaterialPageRoute(
                                                             builder: (context) =>
                                                                 StoresDetailsScreen(
-                                                                    data[
-                                                                        "newSurdetail"],
                                                                     [],
                                                                     false,
                                                                     "newStore",
@@ -685,7 +686,7 @@ class _StoreScreenState extends State<StoreScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              data["lat"] + " " + "/" + " " + data["lat"],
+                              data["lat"] + " " + "/" + " " + data["long"],
                               style: TextStyle(color: Colors.red, fontSize: 15),
                             ),
                           )
@@ -920,10 +921,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           if (value ==
                                                                               true)
                                                                             {
+                                                                              this.setSurDetail(surDetail),
                                                                               Navigator.of(context, rootNavigator: true).pop(),
                                                                               Navigator.of(context).pushReplacement(
                                                                                 MaterialPageRoute(
-                                                                                  builder: (context) => StoresDetailsScreen(surDetail, shopData, false, "assign", "null", "CHECKIN", townshipId),
+                                                                                  builder: (context) => StoresDetailsScreen(shopData, false, "assign", "null", "CHECKIN", townshipId),
                                                                                 ),
                                                                               ),
                                                                             }
@@ -1018,6 +1020,10 @@ class _StoreScreenState extends State<StoreScreen> {
     var shopData = [data];
     var checkStatus;
     bool start = true;
+
+    print("surveydetail->");
+    print(surDetail);
+
     if (data["status"]["currentType"] == "") {
       checkStatus = "Not Started";
     } else if (data["status"]["currentType"] == "CHECKIN") {
@@ -1034,6 +1040,7 @@ class _StoreScreenState extends State<StoreScreen> {
     } else if (data["status"]["currentType"] == "STORECLOSED") {
       checkStatus = "Temporary Close";
     }
+
     return Container(
       color: Colors.grey[200],
       child: Card(
@@ -1098,11 +1105,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                       if (checkStatus == "Check Out") {
                                         this.storage.setItem(
                                             "completeStatus", "Complete");
+                                        this.setSurDetail(surDetail);
                                         Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 StoresDetailsScreen(
-                                                    surDetail,
                                                     shopData,
                                                     false,
                                                     "assign",
@@ -1239,12 +1246,12 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         "completeStatus",
                                                         "inComplete"),
                                                   },
+                                                this.setSurDetail(surDetail),
                                                 Navigator.of(context)
                                                     .pushReplacement(
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         StoresDetailsScreen(
-                                                            surDetail,
                                                             [data],
                                                             false,
                                                             "register",
@@ -1533,6 +1540,11 @@ class _StoreScreenState extends State<StoreScreen> {
     allData[index]["show"] = true;
     allData[index]["existItem"] = true;
     isLoad = false;
+  }
+
+  void setSurDetail(surDetail) {
+    this.storage.deleteItem('Maplatlong');
+    this.storage.setItem("surDetail", surDetail);
   }
 
   var loginData, newParam;
